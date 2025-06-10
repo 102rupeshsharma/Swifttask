@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "axios": "^1.8.4",
+    "os": "^0.1.2",
+    "pymysql": "^1.0.0",
+    "react-toastify": "^11.0.5",
+    "toastr": "^2.1.4"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.4",
+    "@types/react-toastify": "^4.1.0"
+  }
+}

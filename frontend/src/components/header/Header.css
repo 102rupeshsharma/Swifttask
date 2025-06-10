@@ -1,0 +1,65 @@
+header {
+  background: #ffffff;
+  padding: 20px 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  margin: 1rem;
+}
+
+.brand span {
+  font-size:40px;
+  font-weight: bold;
+  text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+.header_btn {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-icon {
+  height: 20px;
+  width: 20px;
+}
+
+.username {
+  font-size: 25px;
+}
+
+.dropdown {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  background: white;
+  border: 1px solid #d6d6d6;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 1rem;
+  z-index: 1000;
+}
+
+.dropdown span {
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #ff4e4e;
+}
+
+.login-button {
+  background-color: transparent !important;
+  color: rgb(45, 99, 217);
+  font-weight: bold;
+  border-radius: 6px;
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 24px;
+}
