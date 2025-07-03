@@ -1,111 +1,167 @@
+/* Layout container for task header section */
 .task-dashboard {
-    display: flex;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* ---------------------- */
+/* New Task Button Styling */
+/* ---------------------- */
+.new-task button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background-color: #2563eb;
+  color: white;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.new-task button:hover {
+  background-color: #1e40af;
+  transform: scale(1.03);
+}
+
+/* ------------------------ */
+/* Frequency Toggle Buttons */
+/* ------------------------ */
+.tasksPeriod {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 12px;
+}
+
+.tasksPeriod button {
+  background-color: #e0ecff;
+  color: #1d4ed8;
+  border: none;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.tasksPeriod button:hover {
+  background-color: #2563eb;
+  color: white;
+}
+
+.tasksPeriod button.active {
+  background-color: #1d4ed8;
+  color: white;
+  transform: scale(1.08);
+  box-shadow: 0 0 10px rgba(30, 64, 175, 0.3);
+}
+
+/* ------------------ */
+/* General Button Reset */
+/* ------------------ */
+button {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* ------------- */
+/* Loading Style */
+/* ------------- */
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+}
+
+/* ---------------------- */
+/* Welcome Message Style */
+/* ---------------------- */
+
+.welcome-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.welcome-msg h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #1f2937;
+  font-family: 'Poppins', sans-serif;
+}
+
+.welcome-msg h1 span {
+  color: #2563eb;
+}
+
+.welcome-msg p {
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  color: #6b7280;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ---------------------- */
+/* Responsive Breakpoints */
+/* ---------------------- */
+
+/* Tablets and below */
+@media screen and (max-width: 768px) {
+  .task-dashboard {
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    padding: 10px 20px;
+    gap: 16px;
   }
-  
+
   .new-task button {
-    margin: 10px 0;
-    height: 50px;
-    font-size: 1rem;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    gap: 7px;
+    width: 100%;
+    justify-content: center;
   }
-  
+
   .tasksPeriod {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 10px;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
   }
-  
+
   .tasksPeriod button {
-    border: none;
-    background-color: #4a90e2;
-    color: white;
-    border-radius: 8px;
-    font-family: 'Poppins', sans-serif;
-    cursor: pointer;
-    transition: 0.3s ease;
-    height: 45px;
-    font-size: 1rem;
-    padding: 0 1.2rem;
+    width: 80%;
   }
-  
-  button {
-    font-family: 'Poppins', sans-serif;
-    padding: 0.6rem 1.4rem;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    border: none;
-    background-color: #4a90e2;
-    color: white;
-    border-radius: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
+}
+
+/* Phones and below */
+@media screen and (max-width: 480px) {
+  .new-task button,
+  .tasksPeriod button {
+    font-size: 0.95rem;
+    padding: 10px 16px;
   }
-  
-  button.active {
-    background-color: #007bff;
-    color: white;
-    transform: scale(1.1);
-    box-shadow: 0 0 10px rgba(18, 176, 224, 0.5);
+
+  .welcome-msg h1 {
+    font-size: 1.5rem;
   }
-  
-  .loader {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 60vh;
+
+  .welcome-msg p {
+    font-size: 0.95rem;
   }
-  
-  /* ---------------------- */
-  /* Responsive Breakpoints */
-  /* ---------------------- */
-  
-  /* Tablets and below */
-  @media screen and (max-width: 768px) {
-    .task-dashboard {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .new-task button {
-      width: 100%;
-      font-size: 1rem;
-      justify-content: center;
-    }
-  
-    .tasksPeriod {
-      flex-direction: column;
-      width: 100%;
-      align-items: center;
-    }
-  
-    .tasksPeriod button {
-      width: 80%;
-      font-size: 1rem;
-    }
-  }
-  
-  /* Phones and below */
-  @media screen and (max-width: 480px) {
-    .new-task button {
-      font-size: 0.95rem;
-      height: 45px;
-      padding: 8px 16px;
-    }
-  
-    .tasksPeriod button {
-      font-size: 0.95rem;
-      height: 45px;
-    }
-  }
-  
+}

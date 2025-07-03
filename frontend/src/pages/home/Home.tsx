@@ -1,6 +1,6 @@
-import './Home.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import './Home.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Daily } from '../../components/daily/Daily';
 import { Weekly } from '../../components/weekly/Weekly';
 import { Monthly } from '../../components/monthly/Monthly';
@@ -67,49 +67,59 @@ export const Home = () => {
       <Header />
 
       <div className="task-dashboard">
+        {/* New Task Button */}
         <div className="new-task">
-          <button onClick={() => setOpen(true)}>
-            <FontAwesomeIcon icon={faPlus} style={{ color: "#282929", marginRight: "2px" }} /> <span>New Task</span>
+          <button onClick={() => setOpen(true)} className="task-btn">
+            <FontAwesomeIcon icon={faPlus} style={{ marginRight: "6px" }} />
+            <span>New Task</span>
           </button>
         </div>
 
+        {/* Task Frequency Selector */}
         <div className='tasksPeriod'>
-          <button
-            className={selectComponent === "daily" ? "active" : ""}
-            onClick={() => setSelectComponent("daily")}>Daily</button>
-          <button
-            className={selectComponent === "weekly" ? "active" : ""}
-            onClick={() => setSelectComponent("weekly")}>Weekly</button>
-          <button
-            className={selectComponent === "monthly" ? "active" : ""}
-            onClick={() => setSelectComponent("monthly")}>Monthly</button>
+          {["daily", "weekly", "monthly"].map((period) => (
+            <button
+              key={period}
+              className={`period-btn ${selectComponent === period ? "active" : ""}`}
+              onClick={() => setSelectComponent(period)}
+            >
+              {period.charAt(0).toUpperCase() + period.slice(1)}
+            </button>
+          ))}
         </div>
       </div>
 
+      {/* Dialogbox for Add/Edit */}
       <Dialogbox
         open={open}
         handleClose={() => {
           setOpen(false);
           setTaskToEdit(null);
         }}
-        onTaskCreatedOrEdited={() => userId && fetchTasks(userId)} 
+        onTaskCreatedOrEdited={() => userId && fetchTasks(userId)}
         taskToEdit={taskToEdit}
       />
 
+      {/* Task Section */}
       <div>
         {loading ? (
           <div className="loader">
-            <ClipLoader color={"#123abc"} loading={loading} size={50} />
+            <ClipLoader color={"#2563eb"} loading={loading} size={50} />
           </div>
-        ) : !userId ? ( 
-          <h1 style={{ textAlign: 'center', marginTop: '50px' }}>Login first to see task</h1>
+        ) : !userId ? (
+          <div className="welcome-container">
+            <div className="welcome-msg">
+              <h1>Welcome to <span>SwiftTask</span> 📝</h1>
+              <p>Organize your daily, weekly, and monthly tasks efficiently.<br />Log in to get started!</p>
+            </div>
+          </div>
         ) : (
           <>
             {selectComponent === "daily" && (
               <Daily
                 tasks={tasks}
                 setTasks={setTasks}
-                onTaskDeleted={() => fetchTasks(userId)} 
+                onTaskDeleted={() => fetchTasks(userId)}
                 onEdit={handleEditTask}
               />
             )}
@@ -117,7 +127,7 @@ export const Home = () => {
               <Weekly
                 tasks={tasks}
                 setTasks={setTasks}
-                onTaskDeleted={() => fetchTasks(userId)} 
+                onTaskDeleted={() => fetchTasks(userId)}
                 onEdit={handleEditTask}
               />
             )}

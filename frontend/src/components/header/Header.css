@@ -1,3 +1,6 @@
+/* ------------------- */
+/* Base Header Layout  */
+/* ------------------- */
 header {
   background: #ffffff;
   padding: 20px 80px;
@@ -7,35 +10,55 @@ header {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   border-radius: 10px;
   margin: 1rem;
+  flex-wrap: wrap;
 }
 
+/* ------------------- */
+/* Brand / Logo Text   */
+/* ------------------- */
 .brand span {
-  font-size:40px;
+  font-size: 40px;
   font-weight: bold;
   text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+  font-family: 'Poppins', sans-serif;
 }
 
+/* ------------------ */
+/* User / Profile Btn */
+/* ------------------ */
 .header_btn {
   display: flex;
   align-items: center;
   position: relative;
 }
 
+/* Flex row for icon + name */
 .user-section {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
+/* FontAwesome user icon */
 .user-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 20px;
   width: 20px;
 }
 
+/* Username text */
 .username {
   font-size: 25px;
+  font-family: 'Poppins', sans-serif;
+  color: #1f2937;
+  cursor: pointer;
 }
 
+/* ----------------- */
+/* Dropdown Menu     */
+/* ----------------- */
 .dropdown {
   position: absolute;
   top: 120%;
@@ -46,20 +69,87 @@ header {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 0.5rem 1rem;
   z-index: 1000;
+  min-width: 120px;
 }
 
 .dropdown span {
   cursor: pointer;
   font-size: 0.95rem;
   color: #ff4e4e;
+  font-family: 'Poppins', sans-serif;
 }
 
+.dropdown span:hover {
+  color: #e11d48;
+}
+
+/* ----------------- */
+/* Login Link        */
+/* ----------------- */
 .login-button {
   background-color: transparent !important;
   color: rgb(45, 99, 217);
   font-weight: bold;
   border-radius: 6px;
-  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
   text-decoration: none;
   font-size: 24px;
+  transition: color 0.3s ease;
+}
+
+.login-button:hover {
+  color: #1d4ed8;
+}
+
+/* ----------------------------------- */
+/* Responsive Breakpoints (Tablets/Mobile) */
+/* ----------------------------------- */
+@media screen and (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 20px 24px;
+  }
+
+  .brand span {
+    font-size: 32px;
+  }
+
+  .user-section {
+    gap: 8px;
+  }
+
+  .username {
+    font-size: 20px;
+  }
+
+  .login-button {
+    font-size: 20px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .brand span {
+    font-size: 28px;
+  }
+
+  .user-icon {
+    height: 18px;
+    width: 18px;
+  }
+
+  .username {
+    font-size: 18px;
+  }
+
+  .login-button {
+    font-size: 18px;
+  }
+
+  .dropdown {
+    top: 110%;
+    min-width: 100px;
+    font-size: 0.9rem;
+  }
 }
