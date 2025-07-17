@@ -68,17 +68,6 @@ const handleShare = async () => {
     return;
   }
 
-   const payload = {
-    to: recipientEmail,
-    task: {
-      title: selectedTask.title,
-      description: selectedTask.description,
-      due_date: selectedTask.due_date,
-      due_time: selectedTask.due_time,
-      frequency: selectedTask.frequency,
-    },
-  };
-
   try {
     const token = localStorage.getItem("token");
     const response = await fetch(`${apiUrl}/share_task`, {
