@@ -83,9 +83,9 @@ def send_email(to_email, subject, body):
         print(f"Error sending email: {e}")
         return False
 
-@app.route('/', method=['GET'])
+@app.route('/', methods=['GET'])
 def testFunc():
-    return "Backend is working";
+    return "Backend is working"
 
 @app.route('/register', methods=['POST'])
 def register():
