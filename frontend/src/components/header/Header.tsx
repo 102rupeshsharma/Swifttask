@@ -47,7 +47,7 @@ const Header = () => {
     return (
         <header>
             <div className="brand">
-                <span>Swift</span><span style={{color:'#2d63d9'}}>Task</span>
+                <span>Swift</span><span style={{color:'#1fc551'}}>Task</span>
             </div>
 
             <div className='header_btn' ref={dropdownRef}>

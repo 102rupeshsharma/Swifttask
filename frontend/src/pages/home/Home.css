@@ -1,4 +1,3 @@
-/* Layout container for task header section */
 .task-dashboard {
   display: flex;
   align-items: center;
@@ -8,15 +7,13 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
-/* ---------------------- */
-/* New Task Button Styling */
-/* ---------------------- */
 .new-task button {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 12px 20px;
-  background-color: #2563eb;
+  background-color: #148b38;
+ 
   color: white;
   font-size: 1rem;
   font-family: 'Poppins', sans-serif;
@@ -29,13 +26,10 @@
 }
 
 .new-task button:hover {
-  background-color: #1e40af;
+  background-color: #1fc551;
   transform: scale(1.03);
 }
 
-/* ------------------------ */
-/* Frequency Toggle Buttons */
-/* ------------------------ */
 .tasksPeriod {
   display: flex;
   justify-content: center;
@@ -46,7 +40,7 @@
 
 .tasksPeriod button {
   background-color: #e0ecff;
-  color: #1d4ed8;
+  color: #1fc551;
   border: none;
   font-family: 'Poppins', sans-serif;
   font-weight: 500;
@@ -58,20 +52,17 @@
 }
 
 .tasksPeriod button:hover {
-  background-color: #2563eb;
+  background-color: #148b38;
   color: white;
 }
 
 .tasksPeriod button.active {
-  background-color: #1d4ed8;
+  background-color: #148b38;
   color: white;
   transform: scale(1.08);
   box-shadow: 0 0 10px rgba(30, 64, 175, 0.3);
 }
 
-/* ------------------ */
-/* General Button Reset */
-/* ------------------ */
 button {
   font-family: 'Poppins', sans-serif;
   font-weight: 500;
@@ -81,19 +72,12 @@ button {
   transition: all 0.3s ease;
 }
 
-/* ------------- */
-/* Loading Style */
-/* ------------- */
 .loader {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 60vh;
 }
-
-/* ---------------------- */
-/* Welcome Message Style */
-/* ---------------------- */
 
 .welcome-container {
   display: flex;
@@ -111,7 +95,7 @@ button {
 }
 
 .welcome-msg h1 span {
-  color: #2563eb;
+  color: #148b38;
 }
 
 .welcome-msg p {
@@ -121,11 +105,6 @@ button {
   font-family: 'Poppins', sans-serif;
 }
 
-/* ---------------------- */
-/* Responsive Breakpoints */
-/* ---------------------- */
-
-/* Tablets and below */
 @media screen and (max-width: 768px) {
   .task-dashboard {
     flex-direction: column;
@@ -149,7 +128,6 @@ button {
   }
 }
 
-/* Phones and below */
 @media screen and (max-width: 480px) {
   .new-task button,
   .tasksPeriod button {

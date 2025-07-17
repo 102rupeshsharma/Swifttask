@@ -10,7 +10,7 @@ import "./Dialogbox.css";
 import { toast } from "react-toastify";
 
 interface Task {
-  id: number;
+  _id: string;
   title: string;
   description: string;
   frequency: string;
@@ -61,13 +61,12 @@ const Dialogbox: React.FC<DialogProps> = ({
   };
 
   const handleSubmit = async () => {
-    const user_id = localStorage.getItem("user_id");
+    const token = localStorage.getItem("token");
 
-    if (!user_id) return alert("Login required");
+    if (!token) return alert("Login required");
     if (!taskTitle || !description) return alert("Please fill out all fields.");
 
     const taskData = {
-      user_id: Number(user_id),
       title: taskTitle,
       description,
       frequency: selectedOption,
@@ -77,14 +76,17 @@ const Dialogbox: React.FC<DialogProps> = ({
 
     try {
       const url = taskToEdit
-        ? `${apiUrl}/update_task/${taskToEdit.id}`
+        ? `${apiUrl}/update_task/${taskToEdit._id}`
         : `${apiUrl}/tasks`;
 
       const method = taskToEdit ? "PUT" : "POST";
 
       const response = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(taskData),
       });
 
@@ -98,13 +100,15 @@ const Dialogbox: React.FC<DialogProps> = ({
         alert(data.message || "Failed to submit task");
       }
     } catch (error) {
+      console.error("Task submission failed:", error);
       alert("Server error");
     }
   };
 
+
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle style={{ display: "flex", justifyContent: "center", color:"black" }}>
+      <DialogTitle style={{ display: "flex", justifyContent: "center", color: "black" }}>
         {taskToEdit ? "Edit Task" : "New Task"}
       </DialogTitle>
 
@@ -150,7 +154,7 @@ const Dialogbox: React.FC<DialogProps> = ({
         </div>
       </DialogContent>
 
-      <DialogActions sx={{ display: "flex", justifyContent: "center"}}>
+      <DialogActions sx={{ display: "flex", justifyContent: "center" }}>
         <Button onClick={handleSubmit} className="submit-btn">
           Submit
         </Button>

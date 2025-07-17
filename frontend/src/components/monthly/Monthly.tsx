@@ -1,36 +1,28 @@
 import React, { useState } from 'react';
-import './Monthly.css'
+import { Task } from '../../interfaces/task';
+import "./Monthly.css"
 
-interface Task {
-  id: number;
-  title: string;
-  description: string;
-  frequency: string;
-  due_date: string;
-  due_time: string;
-}
-interface DailyProps {
+interface MonthlyProps {
   tasks: Task[];
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   onTaskDeleted: () => void;
-  onEdit: (task: Task) => void
+  onEdit: (task: Task) => void;
 }
 
-export const Monthly: React.FC<DailyProps> = ({
+export const Monthly: React.FC<MonthlyProps> = ({
   tasks,
   setTasks,
   onTaskDeleted,
   onEdit,
-
 }) => {
   const apiUrl = import.meta.env.VITE_API_URL;
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const monthlyTasks = tasks.filter(
-    (task) => task.frequency.toLowerCase() === "monthly"
+    (task) => typeof task.frequency === 'string' && task.frequency.toLowerCase() === 'monthly'
   );
 
-  const handleDelete = async (taskId: number) => {
+  const handleDelete = async (taskId: string) => {
     setDeletingId(taskId);
     try {
       const res = await fetch(`${apiUrl}/delete_task/${taskId}`, {
@@ -38,7 +30,7 @@ export const Monthly: React.FC<DailyProps> = ({
       });
 
       if (res.ok) {
-        setTasks((prev) => prev.filter((task) => task.id !== taskId));
+        setTasks((prev) => prev.filter((task) => task._id !== taskId));
         onTaskDeleted();
       } else {
         const data = await res.json();
@@ -53,14 +45,13 @@ export const Monthly: React.FC<DailyProps> = ({
 
   return (
     <div className="monthly-tasks">
-      <div className='task-header'><p> Monthly Tasks</p></div>
+      <div className="task-header"><p>Monthly Tasks</p></div>
       {monthlyTasks.length === 0 ? (
-        <p className="no-tasks">No daily tasks yet.</p>
+        <p className="no-tasks">No monthly tasks yet.</p>
       ) : (
         <div className="task-grid">
           {monthlyTasks.map((task) => (
-            <div key={task.id} className="task-card">
-
+            <div key={task._id} className="task-card">
               <div className="task-content">
                 <h3 className="task-title">{task.title}</h3>
                 <p className="task-desc">{task.description}</p>
@@ -68,23 +59,20 @@ export const Monthly: React.FC<DailyProps> = ({
 
               <div className="date_time-action_btn">
                 <div className="task-datetime">
-                  <span>{task.due_date} </span>
+                  <span>{task.due_date}</span>
                   <span>{task.due_time}</span>
                 </div>
 
                 <div className="task-actions">
                   <button
-                    onClick={() => handleDelete(task.id)}
-                    disabled={deletingId === task.id}
+                    onClick={() => handleDelete(task._id)}
+                    disabled={deletingId === task._id}
                     className="delete-btn"
                   >
-                    {deletingId === task.id ? 'Deleting...' : 'Delete'}
+                    {deletingId === task._id ? 'Deleting...' : 'Delete'}
                   </button>
 
-                  <button
-                    className="edit-btn"
-                    onClick={() => onEdit(task)}
-                  >
+                  <button className="edit-btn" onClick={() => onEdit(task)}>
                     Edit
                   </button>
 
@@ -94,7 +82,6 @@ export const Monthly: React.FC<DailyProps> = ({
                 </div>
               </div>
             </div>
-
           ))}
         </div>
       )}

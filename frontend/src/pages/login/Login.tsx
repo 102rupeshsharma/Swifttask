@@ -10,6 +10,7 @@ import './Login.css';
 
 type LoginResponse = {
   message: string;
+  token: string;
   user: {
     username: string;
     id: string;
@@ -46,6 +47,7 @@ export const Login = () => {
         setIsLoading(false);
         localStorage.setItem('username', data.user.username);
         localStorage.setItem('user_id', data.user.id);
+        localStorage.setItem('token', data.token);
         toast.success('Login successful!');
         navigate('/');
       } else {setIsLoading(false);

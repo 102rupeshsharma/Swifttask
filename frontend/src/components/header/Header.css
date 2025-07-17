@@ -88,7 +88,7 @@ header {
 /* ----------------- */
 .login-button {
   background-color: transparent !important;
-  color: rgb(45, 99, 217);
+  color: #148b38;
   font-weight: bold;
   border-radius: 6px;
   font-family: 'Poppins', sans-serif;
@@ -98,7 +98,7 @@ header {
 }
 
 .login-button:hover {
-  color: #1d4ed8;
+  color: #1bb349;
 }
 
 /* ----------------------------------- */

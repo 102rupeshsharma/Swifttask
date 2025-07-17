@@ -1,92 +1,94 @@
-.monthly-tasks{
-  padding: 20px;
+.monthly-tasks {
+  padding: 2rem;
 }
 
-.task-header {
-  display: flex;
-  justify-content: center;
-  text-shadow: 1px 1px #858181;
+.task-header p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2563eb;
+  margin-bottom: 1rem;
 }
 
-.task-header {
-  font-size: 40px;
-  margin: 10px 0;
+.no-tasks {
+  text-align: center;
+  color: #999;
+  font-size: 1.2rem;
 }
 
 .task-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
 }
 
 .task-card {
-  background: rgb(255, 255, 255);
-  border-radius: 1rem;
-  box-shadow: 0px 4px 16px rgba(0,0,0,0.1);
-  padding: 1rem;
-  min-width: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 150px;
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.task-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .task-title {
+  margin: 0;
   font-size: 1.2rem;
-  font-weight: bold;
-  max-width: 300px;
-  overflow-wrap: anywhere;
-  margin-bottom: 10px;
-}
-
-.date_time-action_btn {
-  display: flex;
-  flex-direction: column;
+  color: #111;
 }
 
 .task-desc {
-  flex-grow: 1;
+  margin: 0.5rem 0;
+  color: #555;
   font-size: 0.95rem;
-  color: #444;
-  max-width: 300px;
-  overflow-wrap:anywhere;
 }
 
 .task-datetime {
-  font-size: 0.85rem;
-  color: #666;
   display: flex;
-  flex-direction: row-reverse;
-  float: right;
-  gap: 10px;
-  margin: 15px;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
+  color: #666;
 }
 
 .task-actions {
   display: flex;
-  float: right;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.task-actions button {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
 }
 
 .delete-btn {
-  background-color: #e74c3c;
+  background: #ef4444;
   color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 8px;
 }
 
 .edit-btn {
-  background-color: #3498db;
+  background: #2563eb;
   color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 8px;
 }
 
 .share-btn {
-  background-color: #2980b9;
+  background: #9ca3af;
   color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 8px;
+}
+
+/* Responsive Centering on Small Screens */
+@media (max-width: 660px) {
+  .task-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }

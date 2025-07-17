@@ -8,15 +8,8 @@ import Dialogbox from '../../components/model/Dialogbox';
 import { useEffect, useState } from 'react';
 import Header from '../../components/header/Header';
 import ClipLoader from "react-spinners/ClipLoader";
+import { Task } from "../../interfaces/task"
 
-interface Task {
-  id: number;
-  title: string;
-  description: string;
-  frequency: string;
-  due_date: string;
-  due_time: string;
-}
 
 export const Home = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -32,13 +25,30 @@ export const Home = () => {
     setOpen(true);
   };
 
-  const fetchTasks = async (userId: string) => {
+  const fetchTasks = async () => {
     try {
-      const res = await fetch(`${apiUrl}/tasks/${userId}`);
+      const token = localStorage.getItem("token");
+      const storedUserId = localStorage.getItem("user_id");
+
+      if (!token || !storedUserId) {
+        setUserId(null);
+        setLoading(false);
+        return;
+      }
+
+      setUserId(storedUserId);
+
+      const res = await fetch(`${apiUrl}/tasks`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       const data = await res.json();
+
       if (res.ok) {
         setTasks(data.tasks);
-        console.log("✅ Task list refreshed");
+        console.log("Task list refreshed");
       } else {
         console.error("Fetch error:", data.message);
       }
@@ -50,32 +60,24 @@ export const Home = () => {
   };
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem("user_id");
-
-    if (!storedUserId) {
-      setUserId(null);
-      setLoading(false);
-      return;
-    }
-
-    setUserId(storedUserId);
-    fetchTasks(storedUserId);
+    fetchTasks();
   }, []);
 
   return (
     <>
       <Header />
-
       <div className="task-dashboard">
-        {/* New Task Button */}
         <div className="new-task">
-          <button onClick={() => setOpen(true)} className="task-btn">
+          <button onClick={() => {
+           setTaskToEdit(null)
+             setOpen(true)} }
+             className="task-btn"
+          >
             <FontAwesomeIcon icon={faPlus} style={{ marginRight: "6px" }} />
             <span>New Task</span>
           </button>
         </div>
 
-        {/* Task Frequency Selector */}
         <div className='tasksPeriod'>
           {["daily", "weekly", "monthly"].map((period) => (
             <button
@@ -89,18 +91,16 @@ export const Home = () => {
         </div>
       </div>
 
-      {/* Dialogbox for Add/Edit */}
       <Dialogbox
         open={open}
         handleClose={() => {
           setOpen(false);
           setTaskToEdit(null);
         }}
-        onTaskCreatedOrEdited={() => userId && fetchTasks(userId)}
+        onTaskCreatedOrEdited={fetchTasks}
         taskToEdit={taskToEdit}
       />
 
-      {/* Task Section */}
       <div>
         {loading ? (
           <div className="loader">
@@ -119,7 +119,7 @@ export const Home = () => {
               <Daily
                 tasks={tasks}
                 setTasks={setTasks}
-                onTaskDeleted={() => fetchTasks(userId)}
+                onTaskDeleted={fetchTasks}
                 onEdit={handleEditTask}
               />
             )}
@@ -127,7 +127,7 @@ export const Home = () => {
               <Weekly
                 tasks={tasks}
                 setTasks={setTasks}
-                onTaskDeleted={() => fetchTasks(userId)}
+                onTaskDeleted={fetchTasks}
                 onEdit={handleEditTask}
               />
             )}
@@ -135,7 +135,7 @@ export const Home = () => {
               <Monthly
                 tasks={tasks}
                 setTasks={setTasks}
-                onTaskDeleted={() => fetchTasks(userId)}
+                onTaskDeleted={fetchTasks}
                 onEdit={handleEditTask}
               />
             )}

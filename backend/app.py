@@ -7,25 +7,23 @@ import bcrypt
 import jwt
 import os
 import datetime
-import requests 
 from functools import wraps
 from google.oauth2 import id_token
-from google.auth.transport import requests as grequests
+from google.auth.transport import requests as google_requests  # fixed variable name
 
-# -------------------- Load .env variables --------------------
 load_dotenv()
 
-# -------------------- App Configuration --------------------
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 mongo = PyMongo(app)
 users_collection = mongo.db.users
+tasks_collection = mongo.db.tasks
 
-# -------------------- JWT Token Decorator --------------------
+
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -53,7 +51,7 @@ def token_required(f):
         return f(current_user, *args, **kwargs)
     return decorated
 
-# -------------------- Register Route --------------------
+
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
@@ -79,7 +77,7 @@ def register():
     inserted = users_collection.insert_one(new_user)
     return jsonify({"message": "Registration successful", "user_id": str(inserted.inserted_id)}), 200
 
-# -------------------- Login Route (JWT Issued) --------------------
+
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -107,7 +105,7 @@ def login():
         }
     }), 200
 
-# -------------------- Google Login Route --------------------
+
 @app.route("/google-login", methods=["POST"])
 def google_login():
     try:
@@ -115,7 +113,6 @@ def google_login():
         if not token:
             return jsonify({"error": "Missing token"}), 400
 
-        # Verify ID token
         CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
         idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), CLIENT_ID)
 
@@ -125,14 +122,14 @@ def google_login():
 
         print("Google ID token payload:", idinfo)
 
-        # Check if user exists, else insert
         user = users_collection.find_one({"email": email})
         if not user:
             users_collection.insert_one({
                 "email": email,
-                "name": name,
+                "username": name,
                 "picture": picture,
-                "login_provider": "google"
+                "login_provider": "google",
+                "password": None
             })
 
         return jsonify({
@@ -150,15 +147,101 @@ def google_login():
         return jsonify({"error": "Internal server error"}), 500
 
 
-# -------------------- Protected Route Example --------------------
 @app.route('/profile', methods=['GET'])
 @token_required
 def profile(current_user):
     return jsonify({
-        "username": current_user["username"],
-        "email": current_user["email"]
+        "username": current_user.get("username"),
+        "email": current_user.get("email")
     }), 200
 
-# -------------------- Main --------------------
+
+# ======= TASK ROUTES =======
+
+@app.route('/tasks', methods=['GET'])
+@token_required
+def get_tasks(current_user):
+    user_tasks = list(mongo.db.tasks.find({"user_id": str(current_user["_id"])}))
+
+    for task in user_tasks:
+        task["_id"] = str(task["_id"])
+
+    return jsonify({"tasks": user_tasks}), 200
+
+
+@app.route('/tasks', methods=['POST'])
+@token_required
+def add_task(current_user):
+    data = request.get_json()
+
+    title = data.get("title")
+    description = data.get("description")
+    frequency = data.get("frequency")
+    due_date = data.get("due_date")
+    due_time = data.get("due_time")
+
+    if not all([title, frequency, due_date, due_time]):
+        return jsonify({"message": "Missing required fields"}), 400
+
+    new_task = {
+        "user_id": str(current_user["_id"]),
+        "title": title,
+        "description": description,
+        "frequency": frequency,
+        "due_date": due_date,
+        "due_time": due_time,
+        "created_at": datetime.datetime.utcnow()
+    }
+
+    inserted = mongo.db.tasks.insert_one(new_task)
+    return jsonify({"message": "Task created", "task_id": str(inserted.inserted_id)}), 201
+
+@app.route('/update_task/<task_id>', methods=['PUT'])
+@token_required
+def update_task(current_user, task_id):
+    data = request.get_json()
+
+    title = data.get("title")
+    description = data.get("description")
+    frequency = data.get("frequency")
+    due_date = data.get("due_date")
+    due_time = data.get("due_time")
+
+    if not all([title, frequency, due_date, due_time]):
+        return jsonify({"message": "Missing required fields"}), 400
+
+    update_data = {
+        "title": title,
+        "description": description,
+        "frequency": frequency,
+        "due_date": due_date,
+        "due_time": due_time
+    }
+
+    result = mongo.db.tasks.update_one(
+        {"_id": ObjectId(task_id), "user_id": str(current_user["_id"])},
+        {"$set": update_data}
+    )
+
+    if result.matched_count == 0:
+        return jsonify({"message": "Task not found or not authorized"}), 404
+
+    return jsonify({"message": "Task updated successfully"}), 200
+
+@app.route('/delete_task/<task_id>', methods=['DELETE'])
+@token_required
+def delete_task(current_user, task_id):
+    result = mongo.db.tasks.delete_one({
+        "_id": ObjectId(task_id),
+        "user_id": str(current_user["_id"])
+    })
+
+    if result.deleted_count == 0:
+        return jsonify({"message": "Task not found or not authorized"}), 404
+
+    return jsonify({"message": "Task deleted successfully"}), 200
+
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
