@@ -17,6 +17,9 @@ export const Daily: React.FC<DailyProps> = ({
 }) => {
   const apiUrl = import.meta.env.VITE_API_URL;
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [recipientEmail, setRecipientEmail] = useState('');
 
   const dailyTasks = tasks.filter(
     (task) => typeof task.frequency === 'string' && task.frequency.toLowerCase() === 'daily'
@@ -25,13 +28,13 @@ export const Daily: React.FC<DailyProps> = ({
   const handleDelete = async (taskId: string) => {
     setDeletingId(taskId);
     try {
-      const token = localStorage.getItem("token")
+      const token = localStorage.getItem("token");
       const res = await fetch(`${apiUrl}/delete_task/${taskId}`, {
         method: 'DELETE',
         headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (res.ok) {
@@ -47,6 +50,69 @@ export const Daily: React.FC<DailyProps> = ({
       setDeletingId(null);
     }
   };
+
+  const openShareModal = (task: Task) => {
+    setSelectedTask(task);
+    setShareModalOpen(true);
+  };
+
+  const closeShareModal = () => {
+    setSelectedTask(null);
+    setRecipientEmail('');
+    setShareModalOpen(false);
+  };
+
+const handleShare = async () => {
+  if (!selectedTask || !recipientEmail) {
+    alert("Please enter recipient email and select a task.");
+    return;
+  }
+
+   const payload = {
+    to: recipientEmail,
+    task: {
+      title: selectedTask.title,
+      description: selectedTask.description,
+      due_date: selectedTask.due_date,
+      due_time: selectedTask.due_time,
+      frequency: selectedTask.frequency,
+    },
+  };
+
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${apiUrl}/share_task`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        to: recipientEmail,
+        task: {
+          title: selectedTask.title,
+          description: selectedTask.description,
+          due_date: selectedTask.due_date,
+          due_time: selectedTask.due_time,
+          frequency: selectedTask.frequency,
+        },
+      }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert("Task shared successfully!");
+      closeShareModal();
+    } else {
+      alert("Failed to share task: " + result.message);
+    }
+  } catch (err) {
+    alert("Error sharing task");
+    console.error(err);
+  }
+};
+
 
   return (
     <div className="daily-tasks">
@@ -84,13 +150,42 @@ export const Daily: React.FC<DailyProps> = ({
                     Edit
                   </button>
 
-                  <button className="share-btn" disabled>
+                  <button
+                    className="share-btn"
+                    onClick={() => openShareModal(item)}
+                  >
                     Share
                   </button>
                 </div>
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Share Modal */}
+      {shareModalOpen && selectedTask && (
+        <div className="modal-overlay">
+          <div className="share-modal">
+            <h2>Share Task</h2>
+            <p><strong>Title:</strong> {selectedTask.title}</p>
+            <p><strong>Description:</strong> {selectedTask.description}</p>
+            <p><strong>Date:</strong> {selectedTask.due_date}</p>
+            <p><strong>Time:</strong> {selectedTask.due_time}</p>
+
+            <input
+              type="email"
+              placeholder="Enter recipient email"
+              value={recipientEmail}
+              onChange={(e) => setRecipientEmail(e.target.value)}
+              className="email-input"
+            />
+
+            <div className="modal-actions">
+              <button onClick={handleShare} className="send-btn">Send</button>
+              <button onClick={closeShareModal} className="cancel-btn">Cancel</button>
+            </div>
+          </div>
         </div>
       )}
     </div>

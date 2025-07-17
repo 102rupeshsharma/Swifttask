@@ -10,6 +10,9 @@ import datetime
 from functools import wraps
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests  # fixed variable name
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 load_dotenv()
 
@@ -51,6 +54,34 @@ def token_required(f):
         return f(current_user, *args, **kwargs)
     return decorated
 
+def send_email(to_email, subject, body):
+    try:
+        # Load email and password from environment
+        sender_email = os.getenv("EMAIL_ADDRESS")
+        sender_password = os.getenv("EMAIL_PASSWORD")
+
+        if not sender_email or not sender_password:
+            print("Missing email credentials.")
+            return False
+
+        # Create email
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = to_email
+        msg['Subject'] = subject
+        msg.attach(MIMEText(body, 'plain'))
+
+        # Send email via Gmail SMTP
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.starttls()
+            server.login(sender_email, sender_password)
+            server.send_message(msg)
+
+        print(f"Email sent to {to_email}")
+        return True
+    except Exception as e:
+        print(f"Error sending email: {e}")
+        return False
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -240,6 +271,44 @@ def delete_task(current_user, task_id):
         return jsonify({"message": "Task not found or not authorized"}), 404
 
     return jsonify({"message": "Task deleted successfully"}), 200
+
+@app.route('/share_task', methods=['POST'])
+@token_required
+def share_task(current_user):
+    data = request.get_json()
+    print("Request Data:", data)
+
+    recipient_email = data.get("to")
+    task = data.get("task")
+    print("Recipient:", recipient_email)
+    print("Task:", task)
+
+    if not recipient_email or not task:
+        return jsonify({"message": "Missing recipient or task data"}), 400
+
+    subject = f"Shared Task: {task.get('title')}"
+    body = f"""
+    Hello,
+
+    A task has been shared with you.
+
+    Title: {task.get('title')}
+    Description: {task.get('description')}
+    Due Date: {task.get('due_date')}
+    Due Time: {task.get('due_time')}
+    Frequency: {task.get('frequency')}
+
+    Shared by: {current_user.get('email')}
+
+    Regards,
+    SwiftTask App
+    """
+
+    email_sent = send_email(recipient_email, subject, body)
+    if email_sent:
+        return jsonify({"message": "Task shared successfully"}), 200
+    else:
+        return jsonify({"message": "Failed to send email"}), 500
 
 
 
